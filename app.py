@@ -17,6 +17,8 @@ model = joblib.load("model.pkl")
 
 preprocessor = joblib.load("preprocessor.pkl")
 
+background_data = joblib.load("background.pkl") 
+
 ACCEPT_THRESHOLD = 0.35
 REVIEW_THRESHOLD = 0.60
 
@@ -45,17 +47,14 @@ def run_inference(form_data: dict) -> dict:
 
     # SHAP
     try:
-        explainer = shap.LinearExplainer(model, masker=shap.maskers.Independent(X))
-        shap_vals = explainer.shap_values(X)
-        if isinstance(shap_vals, list):
-            sv = shap_vals[1][0]
-        else:
-            sv = shap_vals[0]
+        def model_predict(X):
+            return model.predict_proba(X)[:, 1]
 
-        try:
-            feat_names = preprocessor.get_feature_names_out()
-        except Exception:
-            feat_names = [f"feature_{i}" for i in range(len(sv))]
+        explainer = shap.KernelExplainer(model_predict, background_data)
+        shap_vals = explainer.shap_values(X, nsamples=100)
+        sv = shap_vals[0] if shap_vals.ndim == 2 else shap_vals
+
+        feat_names = [n.split('__')[-1] for n in preprocessor.get_feature_names_out()]
 
         top_shap = sorted(
             [{"feature": k, "value": round(float(v), 4), "pos": float(v) > 0}
