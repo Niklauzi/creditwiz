@@ -11,6 +11,7 @@ from typing import Optional
 app = FastAPI(title="ERDE")
 templates = Jinja2Templates(directory="templates")
 
+from logger import log_prediction
 # --- Load artifacts ---
 
 model = joblib.load("model.pkl")
@@ -141,6 +142,7 @@ async def predict(
 
     try:
         result = run_inference(form_data)
+        log_prediction(form_data, result)
         error = None
     except Exception as e:
         result = None

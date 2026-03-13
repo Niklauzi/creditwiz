@@ -1,0 +1,36 @@
+2026-03-13 06:01:45,182 | INFO | === ERDE PREDICTION LOG ===
+2026-03-13 06:01:45,183 | INFO | Decision       : REJECT
+2026-03-13 06:01:45,183 | INFO | Probability    : 67.7%
+2026-03-13 06:01:45,184 | INFO | --- Input Features ---
+2026-03-13 06:01:45,184 | INFO |   loan_amnt: 2000.0
+2026-03-13 06:01:45,184 | INFO |   term: 60
+2026-03-13 06:01:45,184 | INFO |   int_rate: 13.99
+2026-03-13 06:01:45,184 | INFO |   installment: 297.16
+2026-03-13 06:01:45,184 | INFO |   grade: C
+2026-03-13 06:01:45,185 | INFO |   grade_numeric: 3
+2026-03-13 06:01:45,185 | INFO |   purpose_risk_score: 3.0
+2026-03-13 06:01:45,185 | INFO |   annual_inc: 55000.0
+2026-03-13 06:01:45,185 | INFO |   dti: 21.56
+2026-03-13 06:01:45,185 | INFO |   debt_to_income_ratio: 0.21
+2026-03-13 06:01:45,186 | INFO |   loan_to_monthly_income: 2.62
+2026-03-13 06:01:45,186 | INFO |   home_ownership: OWN
+2026-03-13 06:01:45,186 | INFO |   stable_employment: 1
+2026-03-13 06:01:45,186 | INFO |   high_dti_flag: 0
+2026-03-13 06:01:45,186 | INFO |   open_acc: 16.0
+2026-03-13 06:01:45,186 | INFO |   total_acc: 25.0
+2026-03-13 06:01:45,186 | INFO |   inq_last_6mths: 2.0
+2026-03-13 06:01:45,186 | INFO |   inquiry_pressure: 0.12
+2026-03-13 06:01:45,187 | INFO |   revol_util: 38.5
+2026-03-13 06:01:45,187 | INFO |   verification_strength: 3
+2026-03-13 06:01:45,187 | INFO |   strong_verification: 1
+2026-03-13 06:01:45,187 | INFO |   high_risk_grade: 0
+2026-03-13 06:01:45,187 | INFO |   airtime_frequency: 31.0
+2026-03-13 06:01:45,187 | INFO |   betting_frequency: 4.0
+2026-03-13 06:01:45,187 | INFO |   uses_savings: 1
+2026-03-13 06:01:45,187 | INFO |   savings_frequency: 6.0
+2026-03-13 06:01:45,187 | INFO |   savings_avg_amount: 4262.0
+2026-03-13 06:01:45,188 | INFO |   shortterm_loans_avg_amount: 0.0
+2026-03-13 06:01:45,188 | INFO |   uses_utilities: 0
+2026-03-13 06:01:45,188 | INFO |   utilities_monthly_spend: 0.0
+2026-03-13 06:01:45,188 | INFO | --- SHAP Attribution (Top Features) ---
+2026-03-13 06:01:45,428 | INFO | === END ===
