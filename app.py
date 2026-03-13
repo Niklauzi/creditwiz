@@ -1,3 +1,5 @@
+from logger import log_prediction, init_db, save_to_db
+init_db()
 import joblib
 import numpy as np
 import pandas as pd
@@ -13,7 +15,7 @@ templates = Jinja2Templates(directory="templates")
 
 from rule_engine import run_rules, RuleResult
 
-from logger import log_prediction
+
 # --- Load artifacts ---
 
 model = joblib.load("model.pkl")
@@ -157,12 +159,14 @@ async def predict(
             "rule_id": rule_result.rule_id,
         }
         log_prediction(form_data, result)
+        save_to_db(form_data, result)
         error = None
     else:
         try:
             result = run_inference(form_data)
             result["disqualified"] = False
             log_prediction(form_data, result)
+            save_to_db(form_data, result)
             error = None
         except Exception as e:
             result = None

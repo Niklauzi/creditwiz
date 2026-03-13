@@ -1,3 +1,5 @@
 venv/
 myvenv/
 logs/
+
+erde_predictions.db
