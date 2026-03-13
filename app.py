@@ -11,6 +11,8 @@ from typing import Optional
 app = FastAPI(title="ERDE")
 templates = Jinja2Templates(directory="templates")
 
+from rule_engine import run_rules, RuleResult
+
 from logger import log_prediction
 # --- Load artifacts ---
 
@@ -140,13 +142,31 @@ async def predict(
         "uses_utilities": uses_utilities, "utilities_monthly_spend": utilities_monthly_spend,
     }
 
-    try:
-        result = run_inference(form_data)
+    rule_result = run_rules(form_data)
+
+    if not rule_result.passed:
+        # Hard disqualification — never reaches model
+        result = {
+            "prob": 100,
+            "prob_bar": 100,
+            "decision": "REJECT",
+            "css_class": "reject",
+            "shap": [],
+            "disqualified": True,
+            "disqualification_reason": rule_result.reason,
+            "rule_id": rule_result.rule_id,
+        }
         log_prediction(form_data, result)
         error = None
-    except Exception as e:
-        result = None
-        error = str(e)
+    else:
+        try:
+            result = run_inference(form_data)
+            result["disqualified"] = False
+            log_prediction(form_data, result)
+            error = None
+        except Exception as e:
+            result = None
+            error = str(e)
 
     return templates.TemplateResponse("index.html", {
         "request": request,

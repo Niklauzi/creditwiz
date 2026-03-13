@@ -28,6 +28,7 @@ def log_prediction(form_data: dict, result: dict) -> None:
     logger.info(f"Decision       : {result['decision']}")
     logger.info(f"Probability    : {result['prob']}%")
     logger.info("--- Input Features ---")
+    logger.info(f"  predicted_loan_status: {1 if result['prob'] >= 50 else 0}")
     for k, v in form_data.items():
         logger.info(f"  {k}: {v}")
     logger.info("--- SHAP Attribution (Top Features) ---")
