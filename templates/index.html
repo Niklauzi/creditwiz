@@ -22,39 +22,29 @@
   --sans: 'IBM Plex Sans', sans-serif;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--sans);
-  font-size: 14px;
-  line-height: 1.5;
-  min-height: 100vh;
+  background: var(--bg); color: var(--text);
+  font-family: var(--sans); font-size: 14px;
+  line-height: 1.5; min-height: 100vh;
 }
 body::before {
-  content: '';
-  position: fixed; inset: 0; z-index: 0;
+  content: ''; position: fixed; inset: 0; z-index: 0;
   background-image:
     linear-gradient(rgba(0,201,255,.012) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0,201,255,.012) 1px, transparent 1px);
-  background-size: 48px 48px;
-  pointer-events: none;
+  background-size: 48px 48px; pointer-events: none;
 }
-
-/* ---- HEADER ---- */
 header {
-  position: relative; z-index: 2;
+  position: sticky; top: 0; z-index: 2;
   border-bottom: 1px solid var(--border);
   padding: 18px 48px;
   display: flex; align-items: center; gap: 16px;
-  background: rgba(8,10,13,.8);
+  background: rgba(8,10,13,.92);
   backdrop-filter: blur(8px);
 }
 .badge {
-  font-family: var(--mono);
-  font-size: 11px; font-weight: 600;
-  letter-spacing: .18em;
-  color: var(--accent);
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  letter-spacing: .18em; color: var(--accent);
   background: rgba(0,201,255,.08);
   border: 1px solid rgba(0,201,255,.22);
   padding: 4px 10px; border-radius: 3px;
@@ -69,44 +59,31 @@ header p { font-size: 11px; color: var(--muted); font-family: var(--mono); }
 }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.9)} }
 
-/* ---- LAYOUT ---- */
 .layout {
   position: relative; z-index: 1;
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 0;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 48px 80px;
+  display: grid; grid-template-columns: 1fr 380px;
+  gap: 0; max-width: 1200px;
+  margin: 0 auto; padding: 0 48px 80px;
 }
-
-/* ---- FORM PANEL ---- */
 .form-panel {
   padding: 36px 40px 36px 0;
   border-right: 1px solid var(--border);
 }
 .panel-title {
-  font-family: var(--mono);
-  font-size: 10px; font-weight: 600;
+  font-family: var(--mono); font-size: 10px; font-weight: 600;
   letter-spacing: .15em; text-transform: uppercase;
   color: var(--muted);
   display: flex; align-items: center; gap: 8px;
   margin-bottom: 28px;
 }
-.panel-title::after {
-  content: ''; flex: 1;
-  height: 1px; background: var(--border);
-}
+.panel-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 .panel-title .n { color: var(--accent); }
 
 .section { margin-bottom: 28px; }
 .section-head {
-  font-family: var(--mono);
-  font-size: 10px; letter-spacing: .14em;
-  color: rgba(0,201,255,.6);
-  text-transform: uppercase;
-  margin-bottom: 14px;
-  padding-bottom: 6px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .14em;
+  color: rgba(0,201,255,.6); text-transform: uppercase;
+  margin-bottom: 14px; padding-bottom: 6px;
   border-bottom: 1px solid rgba(0,201,255,.08);
 }
 .field-grid {
@@ -115,22 +92,12 @@ header p { font-size: 11px; color: var(--muted); font-family: var(--mono); }
   gap: 10px;
 }
 .field { display: flex; flex-direction: column; gap: 5px; }
-label {
-  font-family: var(--mono);
-  font-size: 10px; letter-spacing: .05em;
-  color: var(--muted);
-}
+label { font-family: var(--mono); font-size: 10px; letter-spacing: .05em; color: var(--muted); }
 input, select {
-  background: var(--surface2);
-  border: 1px solid var(--border-hi);
-  border-radius: 4px;
-  color: var(--text);
-  padding: 8px 10px;
-  font-family: var(--mono);
-  font-size: 12px;
-  width: 100%;
-  outline: none;
-  -webkit-appearance: none;
+  background: var(--surface2); border: 1px solid var(--border-hi);
+  border-radius: 4px; color: var(--text);
+  padding: 8px 10px; font-family: var(--mono); font-size: 12px;
+  width: 100%; outline: none; -webkit-appearance: none;
   transition: border-color .15s, box-shadow .15s;
 }
 input:focus, select:focus {
@@ -138,140 +105,105 @@ input:focus, select:focus {
   box-shadow: 0 0 0 2px rgba(0,201,255,.08);
 }
 select option { background: #1a1e26; }
-
 .btn-submit {
-  width: 100%;
-  padding: 13px;
-  margin-top: 8px;
-  background: var(--accent);
-  color: #000;
-  border: none;
-  border-radius: 4px;
-  font-family: var(--mono);
-  font-size: 12px; font-weight: 600;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  cursor: pointer;
+  width: 100%; padding: 13px; margin-top: 8px;
+  background: var(--accent); color: #000; border: none;
+  border-radius: 4px; font-family: var(--mono);
+  font-size: 12px; font-weight: 600; letter-spacing: .12em;
+  text-transform: uppercase; cursor: pointer;
   transition: opacity .2s, transform .1s;
 }
 .btn-submit:hover { opacity: .85; }
 .btn-submit:active { transform: scale(.99); }
 
-/* ---- RESULT PANEL ---- */
-.result-panel {
-  padding: 36px 0 36px 36px;
-  display: flex; flex-direction: column; gap: 24px;
-}
+.result-panel { padding: 36px 0 36px 36px; display: flex; flex-direction: column; gap: 24px; }
 
-/* Decision card */
 .decision-card {
-  border: 1px solid var(--border-hi);
-  border-radius: 6px;
-  overflow: hidden;
-  background: var(--surface);
+  border: 1px solid var(--border-hi); border-radius: 6px;
+  overflow: hidden; background: var(--surface);
 }
+.decision-card.accept { border-color: rgba(0,224,122,.3); }
+.decision-card.review { border-color: rgba(245,166,35,.3); }
+.decision-card.reject { border-color: rgba(255,77,77,.3); }
+
 .card-header {
-  padding: 10px 18px;
-  border-bottom: 1px solid var(--border);
-  font-family: var(--mono);
-  font-size: 10px; font-weight: 600;
+  padding: 10px 18px; border-bottom: 1px solid var(--border);
+  font-family: var(--mono); font-size: 10px; font-weight: 600;
   letter-spacing: .12em; text-transform: uppercase;
-  color: var(--muted);
-  display: flex; gap: 8px;
+  color: var(--muted); display: flex; gap: 8px;
 }
 .card-header .n { color: var(--accent); }
-
-.verdict-body {
-  padding: 32px 24px 24px;
-  text-align: center;
-}
+.verdict-body { padding: 32px 24px 24px; text-align: center; }
 .verdict-label {
-  font-family: var(--mono);
-  font-size: 10px; letter-spacing: .15em;
-  color: var(--muted); text-transform: uppercase;
-  margin-bottom: 10px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .15em;
+  color: var(--muted); text-transform: uppercase; margin-bottom: 10px;
 }
 .verdict-text {
-  font-family: var(--mono);
-  font-size: 42px; font-weight: 600;
-  letter-spacing: .04em;
-  line-height: 1;
-  margin-bottom: 6px;
+  font-family: var(--mono); font-size: 42px; font-weight: 600;
+  letter-spacing: .04em; line-height: 1; margin-bottom: 6px;
 }
 .verdict-text.accept { color: var(--accept); text-shadow: 0 0 24px rgba(0,224,122,.25); }
 .verdict-text.review { color: var(--review); text-shadow: 0 0 24px rgba(245,166,35,.25); }
 .verdict-text.reject { color: var(--reject); text-shadow: 0 0 24px rgba(255,77,77,.25); }
 
-.prob-section {
-  margin-top: 20px; padding-top: 18px;
-  border-top: 1px solid var(--border);
-}
+.prob-section { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border); }
 .prob-row {
   display: flex; justify-content: space-between;
   font-family: var(--mono); font-size: 11px;
   color: var(--muted); margin-bottom: 8px;
 }
 .prob-row span { color: var(--text); }
-.bar-track {
-  height: 5px; background: var(--border-hi);
-  border-radius: 99px; overflow: hidden;
-}
-.bar-fill {
-  height: 100%; border-radius: 99px;
-}
+.bar-track { height: 5px; background: var(--border-hi); border-radius: 99px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 99px; }
 .bar-fill.accept { background: var(--accept); }
 .bar-fill.review { background: var(--review); }
 .bar-fill.reject { background: var(--reject); }
 
-/* Idle / empty state */
 .idle {
-  padding: 48px 24px;
-  text-align: center;
-  color: var(--muted);
-  font-family: var(--mono);
+  padding: 48px 24px; text-align: center;
+  color: var(--muted); font-family: var(--mono);
   font-size: 11px; line-height: 2;
 }
 .idle-icon { font-size: 26px; opacity: .25; margin-bottom: 12px; }
 
-/* Error */
 .error-box {
   padding: 14px 18px;
-  background: rgba(255,77,77,.06);
-  border: 1px solid rgba(255,77,77,.2);
-  border-radius: 5px;
-  font-family: var(--mono);
-  font-size: 11px; color: var(--reject);
-  line-height: 1.7;
+  background: rgba(255,77,77,.06); border: 1px solid rgba(255,77,77,.2);
+  border-radius: 5px; font-family: var(--mono);
+  font-size: 11px; color: var(--reject); line-height: 1.7;
 }
 
-/* SHAP */
+.disq-banner {
+  border: 1px solid rgba(255,77,77,.3);
+  background: rgba(255,77,77,.06);
+  border-radius: 5px; padding: 14px 18px;
+}
+.disq-id {
+  font-family: var(--mono); font-size: 10px;
+  color: var(--reject); letter-spacing: .12em; margin-bottom: 6px;
+}
+.disq-reason { font-family: var(--sans); font-size: 12px; color: var(--text); line-height: 1.6; }
+
 .shap-card {
-  border: 1px solid var(--border-hi);
-  border-radius: 6px;
-  background: var(--surface);
-  overflow: hidden;
+  border: 1px solid var(--border-hi); border-radius: 6px;
+  background: var(--surface); overflow: hidden;
 }
 .shap-list { padding: 16px 18px; display: flex; flex-direction: column; gap: 11px; }
 .shap-row { display: flex; flex-direction: column; gap: 5px; }
 .shap-meta { display: flex; justify-content: space-between; align-items: center; }
 .shap-feat {
-  font-family: var(--mono); font-size: 10px;
-  color: var(--muted); max-width: 70%;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-family: var(--mono); font-size: 10px; color: var(--muted);
+  max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.shap-val {
-  font-family: var(--mono); font-size: 11px; font-weight: 600;
-}
+.shap-val { font-family: var(--mono); font-size: 11px; font-weight: 600; }
 .shap-val.pos { color: var(--reject); }
 .shap-val.neg { color: var(--accept); }
 .shap-track { height: 3px; background: var(--border-hi); border-radius: 99px; overflow: hidden; }
 .shap-fill { height: 100%; border-radius: 99px; }
 .shap-fill.pos { background: var(--reject); }
 .shap-fill.neg { background: var(--accept); }
-
 .shap-legend {
-  padding: 10px 18px;
-  border-top: 1px solid var(--border);
+  padding: 10px 18px; border-top: 1px solid var(--border);
   display: flex; gap: 16px;
   font-family: var(--mono); font-size: 10px; color: var(--muted);
 }
@@ -280,16 +212,12 @@ select option { background: #1a1e26; }
 .leg-dot.pos { background: var(--reject); }
 .leg-dot.neg { background: var(--accept); }
 
-/* threshold hint */
 .threshold-info {
   font-family: var(--mono); font-size: 10px;
   color: var(--muted); line-height: 1.8;
-  padding: 12px 18px;
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  background: var(--surface);
+  padding: 12px 18px; border: 1px solid var(--border);
+  border-radius: 5px; background: var(--surface);
 }
-.threshold-info span { display: inline-block; width: 55px; }
 .accept-c { color: var(--accept); }
 .review-c { color: var(--review); }
 .reject-c { color: var(--reject); }
@@ -299,26 +227,6 @@ select option { background: #1a1e26; }
   .form-panel { padding: 28px 0; border-right: none; border-bottom: 1px solid var(--border); }
   .result-panel { padding: 28px 0; }
   header { padding: 16px 20px; }
-}
-
-.disq-banner {
-  border: 1px solid rgba(255,77,77,.3);
-  background: rgba(255,77,77,.06);
-  border-radius: 5px;
-  padding: 14px 18px;
-}
-.disq-id {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--reject);
-  letter-spacing: .12em;
-  margin-bottom: 6px;
-}
-.disq-reason {
-  font-family: var(--sans);
-  font-size: 12px;
-  color: var(--text);
-  line-height: 1.6;
 }
 </style>
 </head>
@@ -335,38 +243,39 @@ select option { background: #1a1e26; }
 
 <div class="layout">
 
-  <!-- ===== FORM ===== -->
   <div class="form-panel">
     <div class="panel-title"><span class="n">01</span> Loan Application Input</div>
 
     <form method="POST" action="/">
 
-      <!-- Core loan -->
+      <!-- Loan Details -->
       <div class="section">
-        <div class="section-head">Core Loan Details</div>
+        <div class="section-head">Loan Details</div>
         <div class="field-grid">
           <div class="field">
-            <label>loan_amnt</label>
-            <input type="number" name="loan_amnt" placeholder="250000"
+            <label>Loan Amount</label>
+            <input type="number" step="0.01" name="loan_amnt" placeholder="250000"
               value="{{ form_data.loan_amnt if form_data else '' }}" required/>
           </div>
           <div class="field">
-            <label>term (months)</label>
-            <input type="number" name="term" placeholder="36"
-              value="{{ form_data.term if form_data else '' }}" required/>
+            <label>Term (months)</label>
+            <select name="term">
+              <option value="36" {{ 'selected' if form_data and form_data.term == 36 else '' }}>36 months</option>
+              <option value="60" {{ 'selected' if form_data and form_data.term == 60 else '' }}>60 months</option>
+            </select>
           </div>
           <div class="field">
-            <label>int_rate (%)</label>
+            <label>Interest Rate (%)</label>
             <input type="number" step="0.01" name="int_rate" placeholder="14.5"
               value="{{ form_data.int_rate if form_data else '' }}" required/>
           </div>
           <div class="field">
-            <label>installment</label>
+            <label>Monthly Installment</label>
             <input type="number" step="0.01" name="installment" placeholder="8500"
               value="{{ form_data.installment if form_data else '' }}" required/>
           </div>
           <div class="field">
-            <label>grade</label>
+            <label>Grade</label>
             <select name="grade">
               {% for g in ['A','B','C','D','E','F','G'] %}
               <option value="{{ g }}" {{ 'selected' if form_data and form_data.grade == g else '' }}>{{ g }}</option>
@@ -374,44 +283,36 @@ select option { background: #1a1e26; }
             </select>
           </div>
           <div class="field">
-            <label>grade_numeric (1–7)</label>
-            <input type="number" name="grade_numeric" min="1" max="7" placeholder="3"
-              value="{{ form_data.grade_numeric if form_data else '' }}" required/>
-          </div>
-          <div class="field">
-            <label>purpose_risk_score</label>
-            <input type="number" step="0.01" name="purpose_risk_score" placeholder="0.4"
-              value="{{ form_data.purpose_risk_score if form_data else '' }}" required/>
+            <label>Purpose</label>
+            <select name="purpose">
+              {% for p in ['debt_consolidation','credit_card','home_improvement','other','major_purchase','medical','small_business','car','moving','vacation','wedding','house','educational','renewable_energy'] %}
+              <option value="{{ p }}" {{ 'selected' if form_data and form_data.purpose == p else '' }}>{{ p.replace('_',' ').title() }}</option>
+              {% endfor %}
+            </select>
           </div>
         </div>
       </div>
 
-      <!-- Borrower -->
+      <!-- Borrower Profile -->
       <div class="section">
         <div class="section-head">Borrower Profile</div>
         <div class="field-grid">
           <div class="field">
-            <label>annual_inc</label>
-            <input type="number" name="annual_inc" placeholder="1200000"
+            <label>Annual Income</label>
+            <input type="number" step="0.01" name="annual_inc" placeholder="1200000"
               value="{{ form_data.annual_inc if form_data else '' }}" required/>
           </div>
           <div class="field">
-            <label>dti (optional)</label>
-            <input type="number" step="0.01" name="dti" placeholder="18.5"
-              value="{{ form_data.dti if form_data else '' }}"/>
+            <label>Employment Length (years)</label>
+            <select name="emp_length">
+              <option value="0" {{ 'selected' if form_data and form_data.emp_length == 0 else '' }}>Less than 1 year</option>
+              {% for i in range(1, 11) %}
+              <option value="{{ i }}" {{ 'selected' if form_data and form_data.emp_length == i else '' }}>{{ i }} year{{ 's' if i > 1 else '' }}</option>
+              {% endfor %}
+            </select>
           </div>
           <div class="field">
-            <label>debt_to_income_ratio</label>
-            <input type="number" step="0.01" name="debt_to_income_ratio" placeholder="0.35"
-              value="{{ form_data.debt_to_income_ratio if form_data else '' }}" required/>
-          </div>
-          <div class="field">
-            <label>loan_to_monthly_income</label>
-            <input type="number" step="0.01" name="loan_to_monthly_income" placeholder="2.1"
-              value="{{ form_data.loan_to_monthly_income if form_data else '' }}" required/>
-          </div>
-          <div class="field">
-            <label>home_ownership</label>
+            <label>Home Ownership</label>
             <select name="home_ownership">
               {% for h in ['RENT','OWN','MORTGAGE','OTHER'] %}
               <option value="{{ h }}" {{ 'selected' if form_data and form_data.home_ownership == h else '' }}>{{ h }}</option>
@@ -419,133 +320,57 @@ select option { background: #1a1e26; }
             </select>
           </div>
           <div class="field">
-            <label>stable_employment</label>
-            <select name="stable_employment">
-              <option value="1" {{ 'selected' if form_data and form_data.stable_employment == 1 else '' }}>Yes (1)</option>
-              <option value="0" {{ 'selected' if form_data and form_data.stable_employment == 0 else '' }}>No (0)</option>
+            <label>Verification Status</label>
+            <select name="verification_status">
+              {% for v in ['Not Verified','Source Verified','Verified'] %}
+              <option value="{{ v }}" {{ 'selected' if form_data and form_data.verification_status == v else '' }}>{{ v }}</option>
+              {% endfor %}
             </select>
           </div>
           <div class="field">
-            <label>high_dti_flag</label>
-            <select name="high_dti_flag">
-              <option value="0" {{ 'selected' if form_data and form_data.high_dti_flag == 0 else '' }}>No (0)</option>
-              <option value="1" {{ 'selected' if form_data and form_data.high_dti_flag == 1 else '' }}>Yes (1)</option>
-            </select>
+            <label>DTI (%)</label>
+            <input type="number" step="0.01" name="dti" placeholder="18.5"
+              value="{{ form_data.dti if form_data else '' }}"/>
           </div>
         </div>
       </div>
 
-      <!-- Credit -->
+      <!-- Credit History -->
       <div class="section">
         <div class="section-head">Credit History</div>
         <div class="field-grid">
           <div class="field">
-            <label>open_acc</label>
-            <input type="number" name="open_acc" placeholder="6"
-              value="{{ form_data.open_acc if form_data else '' }}" required/>
-          </div>
-          <div class="field">
-            <label>total_acc</label>
+            <label>Total Accounts</label>
             <input type="number" name="total_acc" placeholder="14"
               value="{{ form_data.total_acc if form_data else '' }}" required/>
           </div>
           <div class="field">
-            <label>inq_last_6mths</label>
+            <label>Inquiries Last 6 Months</label>
             <input type="number" name="inq_last_6mths" placeholder="1"
               value="{{ form_data.inq_last_6mths if form_data else '' }}" required/>
           </div>
           <div class="field">
-            <label>inquiry_pressure</label>
-            <input type="number" step="0.01" name="inquiry_pressure" placeholder="0.2"
-              value="{{ form_data.inquiry_pressure if form_data else '' }}" required/>
+            <label>Public Records</label>
+            <input type="number" name="pub_rec" placeholder="0"
+              value="{{ form_data.pub_rec if form_data else '' }}" required/>
           </div>
           <div class="field">
-            <label>revol_util (optional)</label>
-            <input type="number" step="0.01" name="revol_util" placeholder="45.2"
-              value="{{ form_data.revol_util if form_data else '' }}"/>
-          </div>
-          <div class="field">
-            <label>verification_strength</label>
-            <input type="number" name="verification_strength" placeholder="2"
-              value="{{ form_data.verification_strength if form_data else '' }}" required/>
-          </div>
-          <div class="field">
-            <label>strong_verification</label>
-            <select name="strong_verification">
-              <option value="1" {{ 'selected' if form_data and form_data.strong_verification == 1 else '' }}>Yes (1)</option>
-              <option value="0" {{ 'selected' if form_data and form_data.strong_verification == 0 else '' }}>No (0)</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>high_risk_grade</label>
-            <select name="high_risk_grade">
-              <option value="0" {{ 'selected' if form_data and form_data.high_risk_grade == 0 else '' }}>No (0)</option>
-              <option value="1" {{ 'selected' if form_data and form_data.high_risk_grade == 1 else '' }}>Yes (1)</option>
-            </select>
+            <label>Revolving Balance</label>
+            <input type="number" step="0.01" name="revol_bal" placeholder="15000"
+              value="{{ form_data.revol_bal if form_data else '' }}" required/>
           </div>
         </div>
       </div>
 
-      <!-- Behavioral -->
-      <div class="section">
-        <div class="section-head">Behavioral Signals</div>
-        <div class="field-grid">
-          <div class="field">
-            <label>airtime_frequency</label>
-            <input type="number" step="0.01" name="airtime_frequency" placeholder="12.5"
-              value="{{ form_data.airtime_frequency if form_data else '' }}" required/>
-          </div>
-          <div class="field">
-            <label>betting_frequency</label>
-            <input type="number" step="0.01" name="betting_frequency" placeholder="0.5"
-              value="{{ form_data.betting_frequency if form_data else '' }}" required/>
-          </div>
-          <div class="field">
-            <label>uses_savings</label>
-            <select name="uses_savings">
-              <option value="1" {{ 'selected' if form_data and form_data.uses_savings == 1 else '' }}>Yes (1)</option>
-              <option value="0" {{ 'selected' if form_data and form_data.uses_savings == 0 else '' }}>No (0)</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>savings_frequency</label>
-            <input type="number" step="0.01" name="savings_frequency" placeholder="4.0"
-              value="{{ form_data.savings_frequency if form_data else '' }}" required/>
-          </div>
-          <div class="field">
-            <label>savings_avg_amount</label>
-            <input type="number" step="0.01" name="savings_avg_amount" placeholder="15000"
-              value="{{ form_data.savings_avg_amount if form_data else '' }}" required/>
-          </div>
-          <div class="field">
-            <label>shortterm_loans_avg_amount</label>
-            <input type="number" step="0.01" name="shortterm_loans_avg_amount" placeholder="5000"
-              value="{{ form_data.shortterm_loans_avg_amount if form_data else '' }}" required/>
-          </div>
-          <div class="field">
-            <label>uses_utilities</label>
-            <select name="uses_utilities">
-              <option value="1" {{ 'selected' if form_data and form_data.uses_utilities == 1 else '' }}>Yes (1)</option>
-              <option value="0" {{ 'selected' if form_data and form_data.uses_utilities == 0 else '' }}>No (0)</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>utilities_monthly_spend</label>
-            <input type="number" step="0.01" name="utilities_monthly_spend" placeholder="8000"
-              value="{{ form_data.utilities_monthly_spend if form_data else '' }}" required/>
-          </div>
-        </div>
-      </div>
-
-      <button type="submit" class="btn-submit">▶ Run Decision Engine</button>
+      <button type="submit" class="btn-submit">Run Decision Engine</button>
     </form>
   </div>
 
-  <!-- ===== RESULT ===== -->
+  <!-- RESULT -->
   <div class="result-panel">
     <div class="panel-title"><span class="n">02</span> Decision Output</div>
 
-    <div class="decision-card">
+    <div class="decision-card {% if result %}{{ result.css_class }}{% endif %}">
       <div class="card-header"><span class="n">◈</span> Risk Decision</div>
 
       {% if error %}
@@ -557,6 +382,7 @@ select option { background: #1a1e26; }
         <div class="verdict-body">
           <div class="verdict-label">Credit Decision</div>
           <div class="verdict-text {{ result.css_class }}">{{ result.decision }}</div>
+          {% if not result.disqualified %}
           <div class="prob-section">
             <div class="prob-row">
               <span>Probability of Default</span>
@@ -566,6 +392,7 @@ select option { background: #1a1e26; }
               <div class="bar-fill {{ result.css_class }}" style="width: {{ result.prob_bar }}%"></div>
             </div>
           </div>
+          {% endif %}
         </div>
 
       {% else %}
@@ -576,18 +403,13 @@ select option { background: #1a1e26; }
       {% endif %}
     </div>
 
-{% if result and result.disqualified %}
-<div class="disq-banner">
-  <div class="disq-id">{{ result.rule_id }}</div>
-  <div class="disq-reason">{{ result.disqualification_reason }}</div>
-</div>
-{% endif %}
+    {% if result and result.disqualified %}
+    <div class="disq-banner">
+      <div class="disq-id">{{ result.rule_id }} — AUTO DISQUALIFIED</div>
+      <div class="disq-reason">{{ result.disqualification_reason }}</div>
+    </div>
+    {% endif %}
 
-{% if result and result.shap %}
-
-{% endif %}
-
-    <!-- SHAP -->
     {% if result and result.shap %}
     <div class="shap-card">
       <div class="card-header"><span class="n">◈</span> Feature Attribution (SHAP)</div>
@@ -613,7 +435,6 @@ select option { background: #1a1e26; }
     </div>
     {% endif %}
 
-    <!-- Thresholds -->
     <div class="threshold-info">
       <span class="accept-c">ACCEPT</span> prob &lt; 35%<br/>
       <span class="review-c">REVIEW</span> 35% – 60%<br/>

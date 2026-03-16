@@ -1,5 +1,3 @@
-from logger import log_prediction, init_db, save_to_db
-init_db()
 import joblib
 import numpy as np
 import pandas as pd
@@ -10,24 +8,68 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from typing import Optional
 
+from logger import log_prediction, init_db, save_to_db
+from rule_engine import run_rules
+
 app = FastAPI(title="ERDE")
 templates = Jinja2Templates(directory="templates")
 
-from rule_engine import run_rules, RuleResult
-
+init_db()
 
 # --- Load artifacts ---
-
 model = joblib.load("model.pkl")
-
 preprocessor = joblib.load("preprocessor.pkl")
-
-background_data = joblib.load("background.pkl") 
+background_data = joblib.load("background.pkl")
 
 ACCEPT_THRESHOLD = 0.35
 REVIEW_THRESHOLD = 0.60
 
-CATEGORICAL_FIELDS = {"home_ownership", "grade"}
+GRADE_MAP = {'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7}
+
+PURPOSE_RISK_MAP = {
+    'credit_card': 0.2, 'car': 0.2, 'home_improvement': 0.2,
+    'major_purchase': 0.3, 'medical': 0.3, 'wedding': 0.3,
+    'vacation': 0.4, 'moving': 0.4, 'house': 0.4,
+    'debt_consolidation': 0.5, 'other': 0.5,
+    'small_business': 0.7, 'renewable_energy': 0.5,
+    'educational': 0.4
+}
+
+VERIFICATION_MAP = {
+    'Not Verified': 0, 'Source Verified': 1, 'Verified': 2
+}
+
+
+def engineer_features(raw: dict) -> dict:
+    """Derive model features from raw user inputs."""
+    loan_amnt = float(raw['loan_amnt'])
+    annual_inc = float(raw['annual_inc'])
+    term = int(raw['term'])
+    grade = raw['grade'].upper()
+    emp_length = float(raw['emp_length'])
+    purpose = raw['purpose'].lower()
+    verification_status = raw['verification_status']
+    monthly_income = annual_inc / 12 if annual_inc > 0 else 1
+
+    return {
+        'loan_amnt': loan_amnt,
+        'term': term,
+        'int_rate': float(raw['int_rate']),
+        'installment': float(raw['installment']),
+        'annual_inc': annual_inc,
+        'dti': float(raw['dti']) if raw.get('dti') else 0.0,
+        'total_acc': float(raw['total_acc']),
+        'inq_last_6mths': float(raw['inq_last_6mths']),
+        'pub_rec': float(raw['pub_rec']),
+        'revol_bal': float(raw['revol_bal']),
+        'home_ownership': raw['home_ownership'],
+        'grade_numeric': GRADE_MAP.get(grade, 4),
+        'loan_to_monthly_income': loan_amnt / monthly_income,
+        'stable_employment': 1 if emp_length >= 2 else 0,
+        'long_term_loan': 1 if term == 60 else 0,
+        'verification_strength': VERIFICATION_MAP.get(verification_status, 0),
+        'purpose_risk_score': PURPOSE_RISK_MAP.get(purpose, 0.5),
+    }
 
 
 def get_decision(prob: float) -> tuple[str, str]:
@@ -38,19 +80,15 @@ def get_decision(prob: float) -> tuple[str, str]:
     return "REJECT", "reject"
 
 
-def run_inference(form_data: dict) -> dict:
-    df = pd.DataFrame([form_data])
-
-    # Cast types
-    for col in df.columns:
-        if col not in CATEGORICAL_FIELDS:
-            df[col] = pd.to_numeric(df[col], errors="coerce")
+def run_inference(engineered: dict) -> dict:
+    df = pd.DataFrame([engineered])
+    df = df.replace([np.inf, -np.inf], np.nan)
+    df = df.fillna(df.median(numeric_only=True))
 
     X = preprocessor.transform(df)
     prob = float(model.predict_proba(X)[0][1])
     decision, css_class = get_decision(prob)
 
-    # SHAP
     try:
         def model_predict(X):
             return model.predict_proba(X)[:, 1]
@@ -66,7 +104,7 @@ def run_inference(form_data: dict) -> dict:
              for k, v in zip(feat_names, sv)],
             key=lambda x: abs(x["value"]),
             reverse=True
-        )[:10]
+        )
 
         max_abs = max(abs(x["value"]) for x in top_shap) or 1
         for x in top_shap:
@@ -84,70 +122,43 @@ def run_inference(form_data: dict) -> dict:
     }
 
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/")
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "result": None})
 
 
-@app.post("/", response_class=HTMLResponse)
+@app.post("/")
 async def predict(
     request: Request,
-    # Core loan
     loan_amnt: float = Form(...),
     term: int = Form(...),
     int_rate: float = Form(...),
     installment: float = Form(...),
+    purpose: str = Form(...),
     grade: str = Form(...),
-    grade_numeric: int = Form(...),
-    purpose_risk_score: float = Form(...),
-    # Borrower
     annual_inc: float = Form(...),
-    dti: Optional[float] = Form(None),
-    debt_to_income_ratio: float = Form(...),
-    loan_to_monthly_income: float = Form(...),
+    emp_length: float = Form(...),
     home_ownership: str = Form(...),
-    stable_employment: int = Form(...),
-    high_dti_flag: int = Form(...),
-    # Credit history
-    open_acc: float = Form(...),
+    verification_status: str = Form(...),
+    dti: Optional[float] = Form(None),
     total_acc: float = Form(...),
     inq_last_6mths: float = Form(...),
-    inquiry_pressure: float = Form(...),
-    revol_util: Optional[float] = Form(None),
-    verification_strength: int = Form(...),
-    strong_verification: int = Form(...),
-    high_risk_grade: int = Form(...),
-    # Behavioral
-    airtime_frequency: float = Form(...),
-    betting_frequency: float = Form(...),
-    uses_savings: int = Form(...),
-    savings_frequency: float = Form(...),
-    savings_avg_amount: float = Form(...),
-    shortterm_loans_avg_amount: float = Form(...),
-    uses_utilities: int = Form(...),
-    utilities_monthly_spend: float = Form(...),
+    pub_rec: float = Form(...),
+    revol_bal: float = Form(...),
 ):
-    form_data = {
+    raw_data = {
         "loan_amnt": loan_amnt, "term": term, "int_rate": int_rate,
-        "installment": installment, "grade": grade, "grade_numeric": grade_numeric,
-        "purpose_risk_score": purpose_risk_score, "annual_inc": annual_inc,
-        "dti": dti, "debt_to_income_ratio": debt_to_income_ratio,
-        "loan_to_monthly_income": loan_to_monthly_income, "home_ownership": home_ownership,
-        "stable_employment": stable_employment, "high_dti_flag": high_dti_flag,
-        "open_acc": open_acc, "total_acc": total_acc, "inq_last_6mths": inq_last_6mths,
-        "inquiry_pressure": inquiry_pressure, "revol_util": revol_util,
-        "verification_strength": verification_strength, "strong_verification": strong_verification,
-        "high_risk_grade": high_risk_grade, "airtime_frequency": airtime_frequency,
-        "betting_frequency": betting_frequency, "uses_savings": uses_savings,
-        "savings_frequency": savings_frequency, "savings_avg_amount": savings_avg_amount,
-        "shortterm_loans_avg_amount": shortterm_loans_avg_amount,
-        "uses_utilities": uses_utilities, "utilities_monthly_spend": utilities_monthly_spend,
+        "installment": installment, "purpose": purpose, "grade": grade,
+        "annual_inc": annual_inc, "emp_length": emp_length,
+        "home_ownership": home_ownership, "verification_status": verification_status,
+        "dti": dti, "total_acc": total_acc, "inq_last_6mths": inq_last_6mths,
+        "pub_rec": pub_rec, "revol_bal": revol_bal,
     }
 
-    rule_result = run_rules(form_data)
+    engineered = engineer_features(raw_data)
+    rule_result = run_rules(engineered)
 
     if not rule_result.passed:
-        # Hard disqualification — never reaches model
         result = {
             "prob": 100,
             "prob_bar": 100,
@@ -158,15 +169,15 @@ async def predict(
             "disqualification_reason": rule_result.reason,
             "rule_id": rule_result.rule_id,
         }
-        log_prediction(form_data, result)
-        save_to_db(form_data, result)
+        log_prediction(engineered, result)
+        save_to_db(engineered, result)
         error = None
     else:
         try:
-            result = run_inference(form_data)
+            result = run_inference(engineered)
             result["disqualified"] = False
-            log_prediction(form_data, result)
-            save_to_db(form_data, result)
+            log_prediction(engineered, result)
+            save_to_db(engineered, result)
             error = None
         except Exception as e:
             result = None
@@ -176,5 +187,5 @@ async def predict(
         "request": request,
         "result": result,
         "error": error,
-        "form_data": form_data,
+        "form_data": raw_data,
     })
