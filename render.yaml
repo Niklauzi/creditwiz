@@ -7,9 +7,5 @@ services:
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: creditwiz-db
+          name: creditwiz
           property: connectionString
-
-databases:
-  - name: creditwiz-db
-    plan: free
