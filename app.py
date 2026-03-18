@@ -1,14 +1,16 @@
+import io
+import csv
 import joblib
 import numpy as np
 import pandas as pd
 import shap
 
 from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from typing import Optional
 
-from logger import log_prediction, init_db, save_to_db
+from logger import log_prediction, init_db, save_to_db, fetch_all_predictions
 from rule_engine import run_rules
 
 app = FastAPI(title="ERDE")
@@ -41,7 +43,6 @@ VERIFICATION_MAP = {
 
 
 def engineer_features(raw: dict) -> dict:
-    """Derive model features from raw user inputs."""
     loan_amnt = float(raw['loan_amnt'])
     annual_inc = float(raw['annual_inc'])
     term = int(raw['term'])
@@ -122,12 +123,14 @@ def run_inference(engineered: dict) -> dict:
     }
 
 
-@app.get("/")
+# --- Routes ---
+
+@app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "result": None})
 
 
-@app.post("/")
+@app.post("/", response_class=HTMLResponse)
 async def predict(
     request: Request,
     loan_amnt: float = Form(...),
@@ -189,3 +192,35 @@ async def predict(
         "error": error,
         "form_data": raw_data,
     })
+
+
+@app.get("/dashboard", response_class=HTMLResponse)
+async def dashboard(request: Request):
+    rows = fetch_all_predictions()
+    return templates.TemplateResponse("dashboard.html", {
+        "request": request,
+        "rows": rows,
+        "total": len(rows),
+        "accepts": sum(1 for r in rows if r["decision"] == "ACCEPT"),
+        "reviews": sum(1 for r in rows if r["decision"] == "REVIEW"),
+        "rejects": sum(1 for r in rows if r["decision"] == "REJECT"),
+    })
+
+
+@app.get("/dashboard/export")
+async def export_csv():
+    rows = fetch_all_predictions()
+    if not rows:
+        return StreamingResponse(iter([""]), media_type="text/csv")
+
+    output = io.StringIO()
+    writer = csv.DictWriter(output, fieldnames=rows[0].keys())
+    writer.writeheader()
+    writer.writerows(rows)
+    output.seek(0)
+
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=erde_predictions.csv"}
+    )

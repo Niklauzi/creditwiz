@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ERDE · Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #080a0d; --surface: #0f1115; --surface2: #13161b;
+  --border: #1c2028; --border-hi: #272d38;
+  --text: #dce2ec; --muted: #4a5568;
+  --accent: #00c9ff; --accept: #00e07a; --review: #f5a623; --reject: #ff4d4d;
+  --mono: 'IBM Plex Mono', monospace; --sans: 'IBM Plex Sans', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; min-height: 100vh; }
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(0,201,255,.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,201,255,.012) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events: none;
+}
+header {
+  position: sticky; top: 0; z-index: 2;
+  border-bottom: 1px solid var(--border);
+  padding: 18px 48px; display: flex; align-items: center; gap: 16px;
+  background: rgba(8,10,13,.92); backdrop-filter: blur(8px);
+}
+.badge {
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  letter-spacing: .18em; color: var(--accent);
+  background: rgba(0,201,255,.08); border: 1px solid rgba(0,201,255,.22);
+  padding: 4px 10px; border-radius: 3px;
+}
+header h1 { font-size: 14px; font-weight: 500; }
+header p { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+.nav { margin-left: auto; display: flex; gap: 12px; }
+.nav a {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .08em;
+  color: var(--muted); text-decoration: none; padding: 6px 12px;
+  border: 1px solid var(--border-hi); border-radius: 3px;
+  transition: color .15s, border-color .15s;
+}
+.nav a:hover { color: var(--accent); border-color: var(--accent); }
+.nav a.export { color: var(--accept); border-color: rgba(0,224,122,.3); }
+.nav a.export:hover { border-color: var(--accept); }
+
+.main { position: relative; z-index: 1; max-width: 1300px; margin: 0 auto; padding: 40px 48px 80px; }
+
+/* Stats */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 36px; }
+.stat {
+  background: var(--surface); border: 1px solid var(--border-hi);
+  border-radius: 6px; padding: 20px 24px;
+}
+.stat-label { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+.stat-value { font-family: var(--mono); font-size: 32px; font-weight: 600; }
+.stat-value.total { color: var(--accent); }
+.stat-value.accept { color: var(--accept); }
+.stat-value.review { color: var(--review); }
+.stat-value.reject { color: var(--reject); }
+
+/* Table */
+.table-wrap {
+  background: var(--surface); border: 1px solid var(--border-hi);
+  border-radius: 6px; overflow: hidden;
+}
+.table-head {
+  padding: 12px 20px; border-bottom: 1px solid var(--border);
+  font-family: var(--mono); font-size: 10px; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+thead th {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .08em;
+  color: var(--muted); text-transform: uppercase;
+  padding: 10px 16px; text-align: left;
+  border-bottom: 1px solid var(--border); white-space: nowrap;
+  background: var(--surface2);
+}
+tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+tbody tr:hover { background: var(--surface2); }
+tbody tr:last-child { border-bottom: none; }
+td { padding: 10px 16px; font-family: var(--mono); font-size: 11px; white-space: nowrap; }
+.badge-decision {
+  display: inline-block; padding: 2px 8px; border-radius: 3px;
+  font-size: 10px; font-weight: 600; letter-spacing: .08em;
+}
+.badge-decision.ACCEPT { background: rgba(0,224,122,.12); color: var(--accept); border: 1px solid rgba(0,224,122,.2); }
+.badge-decision.REVIEW { background: rgba(245,166,35,.12); color: var(--review); border: 1px solid rgba(245,166,35,.2); }
+.badge-decision.REJECT { background: rgba(255,77,77,.12); color: var(--reject); border: 1px solid rgba(255,77,77,.2); }
+.badge-status {
+  display: inline-block; padding: 2px 8px; border-radius: 3px;
+  font-size: 10px; letter-spacing: .06em;
+}
+.badge-status.DEFAULT { color: var(--reject); }
+.badge-status.FULLY { color: var(--accept); }
+.disq-tag {
+  font-size: 9px; color: var(--reject); font-family: var(--mono);
+  letter-spacing: .08em; opacity: .7;
+}
+.empty { padding: 48px; text-align: center; color: var(--muted); font-family: var(--mono); font-size: 12px; }
+
+@media (max-width: 820px) {
+  .main { padding: 24px 20px 60px; }
+  header { padding: 16px 20px; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">ERDE</div>
+  <div>
+    <h1>Predictions Dashboard</h1>
+    <p>{{ total }} total records</p>
+  </div>
+  <div class="nav">
+    <a href="/">Run Engine</a>
+    <a href="/dashboard/export" class="export">Export CSV</a>
+  </div>
+</header>
+
+<div class="main">
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">Total Predictions</div>
+      <div class="stat-value total">{{ total }}</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Accepted</div>
+      <div class="stat-value accept">{{ accepts }}</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Review</div>
+      <div class="stat-value review">{{ reviews }}</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Rejected</div>
+      <div class="stat-value reject">{{ rejects }}</div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-head">
+      <span>Prediction Log</span>
+      <span>{{ total }} records</span>
+    </div>
+    {% if rows %}
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Timestamp</th>
+            <th>Decision</th>
+            <th>Probability</th>
+            <th>Loan Status</th>
+            <th>Loan Amt</th>
+            <th>Term</th>
+            <th>Int Rate</th>
+            <th>Annual Inc</th>
+            <th>DTI</th>
+            <th>Grade</th>
+            <th>Home</th>
+            <th>Verification</th>
+            <th>Purpose Score</th>
+            <th>Rule ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in rows %}
+          <tr>
+            <td>{{ r.id }}</td>
+            <td>{{ r.timestamp }}</td>
+            <td><span class="badge-decision {{ r.decision }}">{{ r.decision }}</span></td>
+            <td>{{ r.probability }}%</td>
+            <td>
+              {% if r.predicted_loan_status %}
+              <span class="badge-status {{ r.predicted_loan_status.split()[0] }}">{{ r.predicted_loan_status }}</span>
+              {% else %} — {% endif %}
+            </td>
+            <td>{{ r.loan_amnt }}</td>
+            <td>{{ r.term }}m</td>
+            <td>{{ r.int_rate }}%</td>
+            <td>{{ r.annual_inc }}</td>
+            <td>{{ r.dti }}%</td>
+            <td>{{ r.grade_numeric }}</td>
+            <td>{{ r.home_ownership }}</td>
+            <td>{{ r.verification_strength }}</td>
+            <td>{{ r.purpose_risk_score }}</td>
+            <td>
+              {% if r.rule_id %}
+              <span class="disq-tag">{{ r.rule_id }}</span>
+              {% else %} — {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty">No predictions yet. Run the engine to see records here.</div>
+    {% endif %}
+  </div>
+
+</div>
+</body>
+</html>

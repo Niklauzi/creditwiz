@@ -115,6 +115,20 @@ select option { background: #1a1e26; }
 }
 .btn-submit:hover { opacity: .85; }
 .btn-submit:active { transform: scale(.99); }
+.btn-dashboard {
+  display: inline-block; width: 100%;
+  padding: 13px; margin-top: 16px;
+  background: rgba(0,201,255,.1); color: var(--accent);
+  border: 1px solid var(--accent); border-radius: 4px;
+  font-family: var(--mono); font-size: 12px; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase;
+  cursor: pointer; text-decoration: none; text-align: center;
+  transition: all .2s;
+}
+.btn-dashboard:hover {
+  background: rgba(0,201,255,.15); box-shadow: 0 0 12px rgba(0,201,255,.15);
+}
+.btn-dashboard:active { transform: scale(.99); }
 
 .result-panel { padding: 36px 0 36px 36px; display: flex; flex-direction: column; gap: 24px; }
 
@@ -408,6 +422,10 @@ select option { background: #1a1e26; }
       <div class="disq-id">{{ result.rule_id }} — AUTO DISQUALIFIED</div>
       <div class="disq-reason">{{ result.disqualification_reason }}</div>
     </div>
+    {% endif %}
+
+    {% if result %}
+    <a href="/dashboard" class="btn-dashboard">View All Predictions</a>
     {% endif %}
 
     {% if result and result.shap %}

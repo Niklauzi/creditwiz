@@ -1,5 +1,9 @@
 venv/
-myvenv/
 logs/
 
 erde_predictions.db
+
+__pycache__/
+*.pyc
+*.db
+.env

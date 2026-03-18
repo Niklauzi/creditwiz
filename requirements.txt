@@ -6,3 +6,6 @@ scikit-learn
 pandas
 numpy
 shap
+joblib
+psycopg2-binary
+python-dotenv
