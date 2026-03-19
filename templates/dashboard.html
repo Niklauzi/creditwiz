@@ -49,12 +49,8 @@ header p { font-size: 11px; color: var(--muted); font-family: var(--mono); }
 
 .main { position: relative; z-index: 1; max-width: 1300px; margin: 0 auto; padding: 40px 48px 80px; }
 
-/* Stats */
 .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 36px; }
-.stat {
-  background: var(--surface); border: 1px solid var(--border-hi);
-  border-radius: 6px; padding: 20px 24px;
-}
+.stat { background: var(--surface); border: 1px solid var(--border-hi); border-radius: 6px; padding: 20px 24px; }
 .stat-label { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
 .stat-value { font-family: var(--mono); font-size: 32px; font-weight: 600; }
 .stat-value.total { color: var(--accent); }
@@ -62,11 +58,7 @@ header p { font-size: 11px; color: var(--muted); font-family: var(--mono); }
 .stat-value.review { color: var(--review); }
 .stat-value.reject { color: var(--reject); }
 
-/* Table */
-.table-wrap {
-  background: var(--surface); border: 1px solid var(--border-hi);
-  border-radius: 6px; overflow: hidden;
-}
+.table-wrap { background: var(--surface); border: 1px solid var(--border-hi); border-radius: 6px; overflow: hidden; }
 .table-head {
   padding: 12px 20px; border-bottom: 1px solid var(--border);
   font-family: var(--mono); font-size: 10px; font-weight: 600;
@@ -85,7 +77,9 @@ thead th {
 tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
 tbody tr:hover { background: var(--surface2); }
 tbody tr:last-child { border-bottom: none; }
-td { padding: 10px 16px; font-family: var(--mono); font-size: 11px; white-space: nowrap; }
+td { padding: 10px 16px; font-family: var(--mono); font-size: 11px; white-space: nowrap; color: var(--text); }
+td.dim { color: var(--muted); }
+
 .badge-decision {
   display: inline-block; padding: 2px 8px; border-radius: 3px;
   font-size: 10px; font-weight: 600; letter-spacing: .08em;
@@ -93,16 +87,12 @@ td { padding: 10px 16px; font-family: var(--mono); font-size: 11px; white-space:
 .badge-decision.ACCEPT { background: rgba(0,224,122,.12); color: var(--accept); border: 1px solid rgba(0,224,122,.2); }
 .badge-decision.REVIEW { background: rgba(245,166,35,.12); color: var(--review); border: 1px solid rgba(245,166,35,.2); }
 .badge-decision.REJECT { background: rgba(255,77,77,.12); color: var(--reject); border: 1px solid rgba(255,77,77,.2); }
-.badge-status {
-  display: inline-block; padding: 2px 8px; border-radius: 3px;
-  font-size: 10px; letter-spacing: .06em;
-}
+
+.badge-status { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 10px; letter-spacing: .06em; }
 .badge-status.DEFAULT { color: var(--reject); }
 .badge-status.FULLY { color: var(--accept); }
-.disq-tag {
-  font-size: 9px; color: var(--reject); font-family: var(--mono);
-  letter-spacing: .08em; opacity: .7;
-}
+
+.disq-tag { font-size: 9px; color: var(--reject); font-family: var(--mono); letter-spacing: .08em; opacity: .7; }
 .empty { padding: 48px; text-align: center; color: var(--muted); font-family: var(--mono); font-size: 12px; }
 
 @media (max-width: 820px) {
@@ -165,10 +155,18 @@ td { padding: 10px 16px; font-family: var(--mono); font-size: 11px; white-space:
             <th>Loan Amt</th>
             <th>Term</th>
             <th>Int Rate</th>
+            <th>Installment</th>
             <th>Annual Inc</th>
             <th>DTI</th>
-            <th>Grade</th>
+            <th>Total Acc</th>
+            <th>Inq 6m</th>
+            <th>Pub Rec</th>
+            <th>Revol Bal</th>
             <th>Home</th>
+            <th>Grade</th>
+            <th>LTM Income</th>
+            <th>Stable Emp</th>
+            <th>Long Term</th>
             <th>Verification</th>
             <th>Purpose Score</th>
             <th>Rule ID</th>
@@ -177,8 +175,8 @@ td { padding: 10px 16px; font-family: var(--mono); font-size: 11px; white-space:
         <tbody>
           {% for r in rows %}
           <tr>
-            <td>{{ r.id }}</td>
-            <td>{{ r.timestamp }}</td>
+            <td class="dim">{{ r.id }}</td>
+            <td class="dim">{{ r.timestamp }}</td>
             <td><span class="badge-decision {{ r.decision }}">{{ r.decision }}</span></td>
             <td>{{ r.probability }}%</td>
             <td>
@@ -189,10 +187,18 @@ td { padding: 10px 16px; font-family: var(--mono); font-size: 11px; white-space:
             <td>{{ r.loan_amnt }}</td>
             <td>{{ r.term }}m</td>
             <td>{{ r.int_rate }}%</td>
+            <td>{{ r.installment }}</td>
             <td>{{ r.annual_inc }}</td>
             <td>{{ r.dti }}%</td>
-            <td>{{ r.grade_numeric }}</td>
+            <td>{{ r.total_acc }}</td>
+            <td>{{ r.inq_last_6mths }}</td>
+            <td>{{ r.pub_rec }}</td>
+            <td>{{ r.revol_bal }}</td>
             <td>{{ r.home_ownership }}</td>
+            <td>{{ r.grade_numeric }}</td>
+            <td>{{ "%.2f"|format(r.loan_to_monthly_income) if r.loan_to_monthly_income else '—' }}</td>
+            <td>{{ r.stable_employment }}</td>
+            <td>{{ r.long_term_loan }}</td>
             <td>{{ r.verification_strength }}</td>
             <td>{{ r.purpose_risk_score }}</td>
             <td>
