@@ -39,16 +39,6 @@ VERIFICATION_MAP = {
 
 
 def engineer_features(raw: dict) -> dict:
-    """
-    Raw inputs:  loan_amnt, term, int_rate, annual_inc, dti,
-                 inq_last_6mths, delinq_2yrs, revol_util (used only for derivation),
-                 home_ownership, verification_status, purpose
-
-    Model features:
-        loan_amnt, term, int_rate, dti, inq_last_6mths, delinq_2yrs,
-        loan_to_monthly_income, very_high_utilization, long_term_loan,
-        verification_strength, purpose_risk_score, home_ownership
-    """
     loan_amnt = float(raw['loan_amnt'])
     annual_inc = float(raw['annual_inc'])
     term = int(raw['term'])
@@ -121,9 +111,17 @@ def run_inference(engineered: dict) -> dict:
     }
 
 
+def render(request: Request, template: str, context: dict):
+    """Compatible TemplateResponse for both old and new Starlette versions."""
+    try:
+        return templates.TemplateResponse(request, template, context)
+    except TypeError:
+        return templates.TemplateResponse(template, {"request": request, **context})
+
+
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request, "result": None})
+    return render(request, "index.html", {"result": None})
 
 
 @app.post("/", response_class=HTMLResponse)
@@ -174,8 +172,7 @@ async def predict(
             result = None
             error = str(e)
 
-    return templates.TemplateResponse("index.html", {
-        "request": request,
+    return render(request, "index.html", {
         "result": result,
         "error": error,
         "form_data": raw_data,
@@ -185,8 +182,7 @@ async def predict(
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(request: Request):
     rows = fetch_all_predictions()
-    return templates.TemplateResponse("dashboard.html", {
-        "request": request,
+    return render(request, "dashboard.html", {
         "rows": rows,
         "total": len(rows),
         "accepts": sum(1 for r in rows if r["decision"] == "ACCEPT"),
