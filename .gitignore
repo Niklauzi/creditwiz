@@ -8,3 +8,8 @@ __pycache__/
 *.pyc
 *.db
 .env
+
+settings.json
+
+.vscode/
+.vscode
