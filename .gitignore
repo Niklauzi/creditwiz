@@ -1,5 +1,6 @@
 venv/
 logs/
+data/
 
 erde_predictions.db
 

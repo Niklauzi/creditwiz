@@ -2,16 +2,20 @@ import os
 import logging
 import sqlite3
 from datetime import datetime
-
 from dotenv import load_dotenv
-from psycopg2.extras import RealDictCursor
-from psycopg2.extras import RealDictCursor
 
 load_dotenv()
 
 LOG_DIR = "logs"
 DATABASE_URL = os.environ.get("DATABASE_URL")
 USE_POSTGRES = DATABASE_URL is not None
+
+# Model feature columns stored in DB
+DB_COLS = [
+    "loan_amnt", "term", "int_rate", "dti", "inq_last_6mths", "delinq_2yrs",
+    "home_ownership", "loan_to_monthly_income", "very_high_utilization",
+    "long_term_loan", "verification_strength", "purpose_risk_score"
+]
 
 
 def get_logger() -> logging.Logger:
@@ -31,22 +35,7 @@ def get_conn():
         import psycopg2
         return psycopg2.connect(DATABASE_URL)
     conn = sqlite3.connect("erde_predictions.db")
-    conn.row_factory = sqlite3.Row
     return conn
-
-
-def get_dict_cursor(conn):
-    """Get a cursor that returns dictionaries"""
-    if USE_POSTGRES:
-        return conn.cursor(cursor_factory=RealDictCursor)
-    return conn.cursor()
-
-
-def get_dict_cursor(conn):
-    """Get a cursor that returns dictionaries"""
-    if USE_POSTGRES:
-        return conn.cursor(cursor_factory=RealDictCursor)
-    return conn.cursor()
 
 
 def ph():
@@ -56,36 +45,30 @@ def ph():
 def init_db():
     conn = get_conn()
     cur = conn.cursor()
-    if USE_POSTGRES:
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS predictions (
-                id SERIAL PRIMARY KEY,
-                timestamp TIMESTAMP,
-                decision TEXT, probability REAL, predicted_loan_status TEXT,
-                rule_id TEXT, disqualification_reason TEXT,
-                loan_amnt REAL, term INTEGER, int_rate REAL, installment REAL,
-                annual_inc REAL, dti REAL, total_acc REAL, inq_last_6mths REAL,
-                pub_rec REAL, revol_bal REAL, home_ownership TEXT,
-                grade_numeric INTEGER, loan_to_monthly_income REAL,
-                stable_employment INTEGER, long_term_loan INTEGER,
-                verification_strength INTEGER, purpose_risk_score REAL
-            )
-        """)
-    else:
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS predictions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                timestamp TEXT,
-                decision TEXT, probability REAL, predicted_loan_status TEXT,
-                rule_id TEXT, disqualification_reason TEXT,
-                loan_amnt REAL, term INTEGER, int_rate REAL, installment REAL,
-                annual_inc REAL, dti REAL, total_acc REAL, inq_last_6mths REAL,
-                pub_rec REAL, revol_bal REAL, home_ownership TEXT,
-                grade_numeric INTEGER, loan_to_monthly_income REAL,
-                stable_employment INTEGER, long_term_loan INTEGER,
-                verification_strength INTEGER, purpose_risk_score REAL
-            )
-        """)
+    id_col = "SERIAL PRIMARY KEY" if USE_POSTGRES else "INTEGER PRIMARY KEY AUTOINCREMENT"
+    cur.execute(f"""
+        CREATE TABLE IF NOT EXISTS predictions (
+            id {id_col},
+            timestamp TEXT,
+            decision TEXT,
+            probability REAL,
+            predicted_loan_status TEXT,
+            rule_id TEXT,
+            disqualification_reason TEXT,
+            loan_amnt REAL,
+            term INTEGER,
+            int_rate REAL,
+            dti REAL,
+            inq_last_6mths REAL,
+            delinq_2yrs REAL,
+            home_ownership TEXT,
+            loan_to_monthly_income REAL,
+            very_high_utilization INTEGER,
+            long_term_loan INTEGER,
+            verification_strength INTEGER,
+            purpose_risk_score REAL
+        )
+    """)
     conn.commit()
     cur.close()
     conn.close()
@@ -99,13 +82,13 @@ def save_to_db(engineered: dict, result: dict):
         INSERT INTO predictions (
             timestamp, decision, probability, predicted_loan_status,
             rule_id, disqualification_reason,
-            loan_amnt, term, int_rate, installment, annual_inc, dti,
-            total_acc, inq_last_6mths, pub_rec, revol_bal, home_ownership,
-            grade_numeric, loan_to_monthly_income, stable_employment,
+            loan_amnt, term, int_rate, dti, inq_last_6mths, delinq_2yrs,
+            home_ownership, loan_to_monthly_income, very_high_utilization,
             long_term_loan, verification_strength, purpose_risk_score
         ) VALUES (
-            {p},{p},{p},{p},{p},{p},{p},{p},{p},{p},{p},{p},
-            {p},{p},{p},{p},{p},{p},{p},{p},{p},{p},{p}
+            {p},{p},{p},{p},{p},{p},
+            {p},{p},{p},{p},{p},{p},
+            {p},{p},{p},{p},{p},{p}
         )
     """, (
         datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -115,14 +98,11 @@ def save_to_db(engineered: dict, result: dict):
         result.get("rule_id"),
         result.get("disqualification_reason"),
         engineered.get("loan_amnt"), engineered.get("term"),
-        engineered.get("int_rate"), engineered.get("installment"),
-        engineered.get("annual_inc"), engineered.get("dti"),
-        engineered.get("total_acc"), engineered.get("inq_last_6mths"),
-        engineered.get("pub_rec"), engineered.get("revol_bal"),
-        engineered.get("home_ownership"), engineered.get("grade_numeric"),
-        engineered.get("loan_to_monthly_income"), engineered.get("stable_employment"),
-        engineered.get("long_term_loan"), engineered.get("verification_strength"),
-        engineered.get("purpose_risk_score"),
+        engineered.get("int_rate"), engineered.get("dti"),
+        engineered.get("inq_last_6mths"), engineered.get("delinq_2yrs"),
+        engineered.get("home_ownership"), engineered.get("loan_to_monthly_income"),
+        engineered.get("very_high_utilization"), engineered.get("long_term_loan"),
+        engineered.get("verification_strength"), engineered.get("purpose_risk_score"),
     ))
     conn.commit()
     cur.close()
@@ -131,9 +111,9 @@ def save_to_db(engineered: dict, result: dict):
 
 def fetch_all_predictions() -> list[dict]:
     conn = get_conn()
-    cur = get_dict_cursor(conn)
+    cur = conn.cursor()
     cur.execute("SELECT * FROM predictions ORDER BY timestamp DESC")
-    rows = [dict(r) for r in cur.fetchall()]
+    rows = [dict(zip([col[0] for col in cur.description], row)) for row in cur.fetchall()]
     cur.close()
     conn.close()
     return rows
@@ -142,7 +122,6 @@ def fetch_all_predictions() -> list[dict]:
 def log_prediction(engineered: dict, result: dict) -> None:
     logger = get_logger()
     logger.info("=== ERDE PREDICTION LOG ===")
-
     if result.get("disqualified"):
         logger.info("Decision       : HARD REJECT (Rule Engine)")
         logger.info(f"Rule ID        : {result['rule_id']}")
@@ -155,7 +134,6 @@ def log_prediction(engineered: dict, result: dict) -> None:
         for s in result["shap"]:
             direction = "INCREASES RISK" if s["pos"] else "REDUCES RISK"
             logger.info(f"  {s['feature']}: {s['value']:+.4f} ({direction})")
-
     logger.info("--- Engineered Features ---")
     for k, v in engineered.items():
         logger.info(f"  {k}: {v}")

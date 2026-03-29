@@ -7,26 +7,14 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --bg: #080a0d;
-  --surface: #0f1115;
-  --surface2: #13161b;
-  --border: #1c2028;
-  --border-hi: #272d38;
-  --text: #dce2ec;
-  --muted: #4a5568;
-  --accent: #00c9ff;
-  --accept: #00e07a;
-  --review: #f5a623;
-  --reject: #ff4d4d;
-  --mono: 'IBM Plex Mono', monospace;
-  --sans: 'IBM Plex Sans', sans-serif;
+  --bg: #080a0d; --surface: #0f1115; --surface2: #13161b;
+  --border: #1c2028; --border-hi: #272d38;
+  --text: #dce2ec; --muted: #4a5568;
+  --accent: #00c9ff; --accept: #00e07a; --review: #f5a623; --reject: #ff4d4d;
+  --mono: 'IBM Plex Mono', monospace; --sans: 'IBM Plex Sans', sans-serif;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  background: var(--bg); color: var(--text);
-  font-family: var(--sans); font-size: 14px;
-  line-height: 1.5; min-height: 100vh;
-}
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
 body::before {
   content: ''; position: fixed; inset: 0; z-index: 0;
   background-image:
@@ -36,179 +24,65 @@ body::before {
 }
 header {
   position: sticky; top: 0; z-index: 2;
-  border-bottom: 1px solid var(--border);
-  padding: 18px 48px;
+  border-bottom: 1px solid var(--border); padding: 18px 48px;
   display: flex; align-items: center; gap: 16px;
-  background: rgba(8,10,13,.92);
-  backdrop-filter: blur(8px);
+  background: rgba(8,10,13,.92); backdrop-filter: blur(8px);
 }
-.badge {
-  font-family: var(--mono); font-size: 11px; font-weight: 600;
-  letter-spacing: .18em; color: var(--accent);
-  background: rgba(0,201,255,.08);
-  border: 1px solid rgba(0,201,255,.22);
-  padding: 4px 10px; border-radius: 3px;
-}
+.badge { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .18em; color: var(--accent); background: rgba(0,201,255,.08); border: 1px solid rgba(0,201,255,.22); padding: 4px 10px; border-radius: 3px; }
 header h1 { font-size: 14px; font-weight: 500; letter-spacing: .03em; }
 header p { font-size: 11px; color: var(--muted); font-family: var(--mono); }
-.status-dot {
-  margin-left: auto; width: 7px; height: 7px;
-  border-radius: 50%; background: var(--accept);
-  box-shadow: 0 0 10px var(--accept);
-  animation: pulse 2.4s infinite;
-}
+.status-dot { margin-left: auto; width: 7px; height: 7px; border-radius: 50%; background: var(--accept); box-shadow: 0 0 10px var(--accept); animation: pulse 2.4s infinite; }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.9)} }
-
-.layout {
-  position: relative; z-index: 1;
-  display: grid; grid-template-columns: 1fr 380px;
-  gap: 0; max-width: 1200px;
-  margin: 0 auto; padding: 0 48px 80px;
-}
-.form-panel {
-  padding: 36px 40px 36px 0;
-  border-right: 1px solid var(--border);
-}
-.panel-title {
-  font-family: var(--mono); font-size: 10px; font-weight: 600;
-  letter-spacing: .15em; text-transform: uppercase;
-  color: var(--muted);
-  display: flex; align-items: center; gap: 8px;
-  margin-bottom: 28px;
-}
+.layout { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 380px; gap: 0; max-width: 1200px; margin: 0 auto; padding: 0 48px 80px; }
+.form-panel { padding: 36px 40px 36px 0; border-right: 1px solid var(--border); }
+.panel-title { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 8px; margin-bottom: 28px; }
 .panel-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 .panel-title .n { color: var(--accent); }
-
 .section { margin-bottom: 28px; }
-.section-head {
-  font-family: var(--mono); font-size: 10px; letter-spacing: .14em;
-  color: rgba(0,201,255,.6); text-transform: uppercase;
-  margin-bottom: 14px; padding-bottom: 6px;
-  border-bottom: 1px solid rgba(0,201,255,.08);
-}
-.field-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
-  gap: 10px;
-}
+.section-head { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; color: rgba(0,201,255,.6); text-transform: uppercase; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid rgba(0,201,255,.08); }
+.field-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 10px; }
 .field { display: flex; flex-direction: column; gap: 5px; }
 label { font-family: var(--mono); font-size: 10px; letter-spacing: .05em; color: var(--muted); }
-input, select {
-  background: var(--surface2); border: 1px solid var(--border-hi);
-  border-radius: 4px; color: var(--text);
-  padding: 8px 10px; font-family: var(--mono); font-size: 12px;
-  width: 100%; outline: none; -webkit-appearance: none;
-  transition: border-color .15s, box-shadow .15s;
-}
-input:focus, select:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(0,201,255,.08);
-}
+input, select { background: var(--surface2); border: 1px solid var(--border-hi); border-radius: 4px; color: var(--text); padding: 8px 10px; font-family: var(--mono); font-size: 12px; width: 100%; outline: none; -webkit-appearance: none; transition: border-color .15s, box-shadow .15s; }
+input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0,201,255,.08); }
 select option { background: #1a1e26; }
-.btn-submit {
-  width: 100%; padding: 13px; margin-top: 8px;
-  background: var(--accent); color: #000; border: none;
-  border-radius: 4px; font-family: var(--mono);
-  font-size: 12px; font-weight: 600; letter-spacing: .12em;
-  text-transform: uppercase; cursor: pointer;
-  transition: opacity .2s, transform .1s;
-}
+.btn-submit { width: 100%; padding: 13px; margin-top: 8px; background: var(--accent); color: #000; border: none; border-radius: 4px; font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; transition: opacity .2s, transform .1s; }
 .btn-submit:hover { opacity: .85; }
 .btn-submit:active { transform: scale(.99); }
-.btn-dashboard {
-  display: inline-block; width: 100%;
-  padding: 13px; margin-top: 16px;
-  background: rgba(0,201,255,.1); color: var(--accent);
-  border: 1px solid var(--accent); border-radius: 4px;
-  font-family: var(--mono); font-size: 12px; font-weight: 600;
-  letter-spacing: .12em; text-transform: uppercase;
-  cursor: pointer; text-decoration: none; text-align: center;
-  transition: all .2s;
-}
-.btn-dashboard:hover {
-  background: rgba(0,201,255,.15); box-shadow: 0 0 12px rgba(0,201,255,.15);
-}
-.btn-dashboard:active { transform: scale(.99); }
-
+.btn-dashboard { display: inline-block; width: 100%; padding: 13px; margin-top: 16px; background: rgba(0,201,255,.1); color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; text-decoration: none; text-align: center; transition: all .2s; }
+.btn-dashboard:hover { background: rgba(0,201,255,.15); box-shadow: 0 0 12px rgba(0,201,255,.15); }
 .result-panel { padding: 36px 0 36px 36px; display: flex; flex-direction: column; gap: 24px; }
-
-.decision-card {
-  border: 1px solid var(--border-hi); border-radius: 6px;
-  overflow: hidden; background: var(--surface);
-}
+.decision-card { border: 1px solid var(--border-hi); border-radius: 6px; overflow: hidden; background: var(--surface); }
 .decision-card.accept { border-color: rgba(0,224,122,.3); }
 .decision-card.review { border-color: rgba(245,166,35,.3); }
 .decision-card.reject { border-color: rgba(255,77,77,.3); }
-
-.card-header {
-  padding: 10px 18px; border-bottom: 1px solid var(--border);
-  font-family: var(--mono); font-size: 10px; font-weight: 600;
-  letter-spacing: .12em; text-transform: uppercase;
-  color: var(--muted); display: flex; gap: 8px;
-}
+.card-header { padding: 10px 18px; border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); display: flex; gap: 8px; }
 .card-header .n { color: var(--accent); }
 .verdict-body { padding: 32px 24px 24px; text-align: center; }
-.verdict-label {
-  font-family: var(--mono); font-size: 10px; letter-spacing: .15em;
-  color: var(--muted); text-transform: uppercase; margin-bottom: 10px;
-}
-.verdict-text {
-  font-family: var(--mono); font-size: 42px; font-weight: 600;
-  letter-spacing: .04em; line-height: 1; margin-bottom: 6px;
-}
+.verdict-label { font-family: var(--mono); font-size: 10px; letter-spacing: .15em; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; }
+.verdict-text { font-family: var(--mono); font-size: 42px; font-weight: 600; letter-spacing: .04em; line-height: 1; margin-bottom: 6px; }
 .verdict-text.accept { color: var(--accept); text-shadow: 0 0 24px rgba(0,224,122,.25); }
 .verdict-text.review { color: var(--review); text-shadow: 0 0 24px rgba(245,166,35,.25); }
 .verdict-text.reject { color: var(--reject); text-shadow: 0 0 24px rgba(255,77,77,.25); }
-
 .prob-section { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border); }
-.prob-row {
-  display: flex; justify-content: space-between;
-  font-family: var(--mono); font-size: 11px;
-  color: var(--muted); margin-bottom: 8px;
-}
+.prob-row { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; color: var(--muted); margin-bottom: 8px; }
 .prob-row span { color: var(--text); }
 .bar-track { height: 5px; background: var(--border-hi); border-radius: 99px; overflow: hidden; }
 .bar-fill { height: 100%; border-radius: 99px; }
 .bar-fill.accept { background: var(--accept); }
 .bar-fill.review { background: var(--review); }
 .bar-fill.reject { background: var(--reject); }
-
-.idle {
-  padding: 48px 24px; text-align: center;
-  color: var(--muted); font-family: var(--mono);
-  font-size: 11px; line-height: 2;
-}
+.idle { padding: 48px 24px; text-align: center; color: var(--muted); font-family: var(--mono); font-size: 11px; line-height: 2; }
 .idle-icon { font-size: 26px; opacity: .25; margin-bottom: 12px; }
-
-.error-box {
-  padding: 14px 18px;
-  background: rgba(255,77,77,.06); border: 1px solid rgba(255,77,77,.2);
-  border-radius: 5px; font-family: var(--mono);
-  font-size: 11px; color: var(--reject); line-height: 1.7;
-}
-
-.disq-banner {
-  border: 1px solid rgba(255,77,77,.3);
-  background: rgba(255,77,77,.06);
-  border-radius: 5px; padding: 14px 18px;
-}
-.disq-id {
-  font-family: var(--mono); font-size: 10px;
-  color: var(--reject); letter-spacing: .12em; margin-bottom: 6px;
-}
+.error-box { padding: 14px 18px; background: rgba(255,77,77,.06); border: 1px solid rgba(255,77,77,.2); border-radius: 5px; font-family: var(--mono); font-size: 11px; color: var(--reject); line-height: 1.7; }
+.disq-banner { border: 1px solid rgba(255,77,77,.3); background: rgba(255,77,77,.06); border-radius: 5px; padding: 14px 18px; }
+.disq-id { font-family: var(--mono); font-size: 10px; color: var(--reject); letter-spacing: .12em; margin-bottom: 6px; }
 .disq-reason { font-family: var(--sans); font-size: 12px; color: var(--text); line-height: 1.6; }
-
-.shap-card {
-  border: 1px solid var(--border-hi); border-radius: 6px;
-  background: var(--surface); overflow: hidden;
-}
+.shap-card { border: 1px solid var(--border-hi); border-radius: 6px; background: var(--surface); overflow: hidden; }
 .shap-list { padding: 16px 18px; display: flex; flex-direction: column; gap: 11px; }
 .shap-row { display: flex; flex-direction: column; gap: 5px; }
 .shap-meta { display: flex; justify-content: space-between; align-items: center; }
-.shap-feat {
-  font-family: var(--mono); font-size: 10px; color: var(--muted);
-  max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
+.shap-feat { font-family: var(--mono); font-size: 10px; color: var(--muted); max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .shap-val { font-family: var(--mono); font-size: 11px; font-weight: 600; }
 .shap-val.pos { color: var(--reject); }
 .shap-val.neg { color: var(--accept); }
@@ -216,26 +90,15 @@ select option { background: #1a1e26; }
 .shap-fill { height: 100%; border-radius: 99px; }
 .shap-fill.pos { background: var(--reject); }
 .shap-fill.neg { background: var(--accept); }
-.shap-legend {
-  padding: 10px 18px; border-top: 1px solid var(--border);
-  display: flex; gap: 16px;
-  font-family: var(--mono); font-size: 10px; color: var(--muted);
-}
+.shap-legend { padding: 10px 18px; border-top: 1px solid var(--border); display: flex; gap: 16px; font-family: var(--mono); font-size: 10px; color: var(--muted); }
 .leg { display: flex; align-items: center; gap: 5px; }
 .leg-dot { width: 8px; height: 3px; border-radius: 99px; }
 .leg-dot.pos { background: var(--reject); }
 .leg-dot.neg { background: var(--accept); }
-
-.threshold-info {
-  font-family: var(--mono); font-size: 10px;
-  color: var(--muted); line-height: 1.8;
-  padding: 12px 18px; border: 1px solid var(--border);
-  border-radius: 5px; background: var(--surface);
-}
+.threshold-info { font-family: var(--mono); font-size: 10px; color: var(--muted); line-height: 1.8; padding: 12px 18px; border: 1px solid var(--border); border-radius: 5px; background: var(--surface); }
 .accept-c { color: var(--accept); }
 .review-c { color: var(--review); }
 .reject-c { color: var(--reject); }
-
 @media (max-width: 820px) {
   .layout { grid-template-columns: 1fr; padding: 0 20px 60px; }
   .form-panel { padding: 28px 0; border-right: none; border-bottom: 1px solid var(--border); }
@@ -245,7 +108,6 @@ select option { background: #1a1e26; }
 </style>
 </head>
 <body>
-
 <header>
   <div class="badge">ERDE</div>
   <div>
@@ -256,13 +118,10 @@ select option { background: #1a1e26; }
 </header>
 
 <div class="layout">
-
   <div class="form-panel">
     <div class="panel-title"><span class="n">01</span> Loan Application Input</div>
-
     <form method="POST" action="/">
 
-      <!-- Loan Details -->
       <div class="section">
         <div class="section-head">Loan Details</div>
         <div class="field-grid">
@@ -284,19 +143,6 @@ select option { background: #1a1e26; }
               value="{{ form_data.int_rate if form_data else '' }}" required/>
           </div>
           <div class="field">
-            <label>Monthly Installment</label>
-            <input type="number" step="0.01" name="installment" placeholder="8500"
-              value="{{ form_data.installment if form_data else '' }}" required/>
-          </div>
-          <div class="field">
-            <label>Grade</label>
-            <select name="grade">
-              {% for g in ['A','B','C','D','E','F','G'] %}
-              <option value="{{ g }}" {{ 'selected' if form_data and form_data.grade == g else '' }}>{{ g }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="field">
             <label>Purpose</label>
             <select name="purpose">
               {% for p in ['debt_consolidation','credit_card','home_improvement','other','major_purchase','medical','small_business','car','moving','vacation','wedding','house','educational','renewable_energy'] %}
@@ -307,7 +153,6 @@ select option { background: #1a1e26; }
         </div>
       </div>
 
-      <!-- Borrower Profile -->
       <div class="section">
         <div class="section-head">Borrower Profile</div>
         <div class="field-grid">
@@ -317,13 +162,9 @@ select option { background: #1a1e26; }
               value="{{ form_data.annual_inc if form_data else '' }}" required/>
           </div>
           <div class="field">
-            <label>Employment Length (years)</label>
-            <select name="emp_length">
-              <option value="0" {{ 'selected' if form_data and form_data.emp_length == 0 else '' }}>Less than 1 year</option>
-              {% for i in range(1, 11) %}
-              <option value="{{ i }}" {{ 'selected' if form_data and form_data.emp_length == i else '' }}>{{ i }} year{{ 's' if i > 1 else '' }}</option>
-              {% endfor %}
-            </select>
+            <label>DTI (%)</label>
+            <input type="number" step="0.01" name="dti" placeholder="18.5"
+              value="{{ form_data.dti if form_data else '' }}"/>
           </div>
           <div class="field">
             <label>Home Ownership</label>
@@ -341,37 +182,26 @@ select option { background: #1a1e26; }
               {% endfor %}
             </select>
           </div>
-          <div class="field">
-            <label>DTI (%)</label>
-            <input type="number" step="0.01" name="dti" placeholder="18.5"
-              value="{{ form_data.dti if form_data else '' }}"/>
-          </div>
         </div>
       </div>
 
-      <!-- Credit History -->
       <div class="section">
         <div class="section-head">Credit History</div>
         <div class="field-grid">
-          <div class="field">
-            <label>Total Accounts</label>
-            <input type="number" name="total_acc" placeholder="14"
-              value="{{ form_data.total_acc if form_data else '' }}" required/>
-          </div>
           <div class="field">
             <label>Inquiries Last 6 Months</label>
             <input type="number" name="inq_last_6mths" placeholder="1"
               value="{{ form_data.inq_last_6mths if form_data else '' }}" required/>
           </div>
           <div class="field">
-            <label>Public Records</label>
-            <input type="number" name="pub_rec" placeholder="0"
-              value="{{ form_data.pub_rec if form_data else '' }}" required/>
+            <label>Delinquencies (2 yrs)</label>
+            <input type="number" name="delinq_2yrs" placeholder="0"
+              value="{{ form_data.delinq_2yrs if form_data else '' }}" required/>
           </div>
           <div class="field">
-            <label>Revolving Balance</label>
-            <input type="number" step="0.01" name="revol_bal" placeholder="15000"
-              value="{{ form_data.revol_bal if form_data else '' }}" required/>
+            <label>Revolving Utilization (%)</label>
+            <input type="number" step="0.01" name="revol_util" placeholder="45.2"
+              value="{{ form_data.revol_util if form_data else '' }}"/>
           </div>
         </div>
       </div>
@@ -380,18 +210,13 @@ select option { background: #1a1e26; }
     </form>
   </div>
 
-  <!-- RESULT -->
   <div class="result-panel">
     <div class="panel-title"><span class="n">02</span> Decision Output</div>
 
     <div class="decision-card {% if result %}{{ result.css_class }}{% endif %}">
       <div class="card-header"><span class="n">◈</span> Risk Decision</div>
-
       {% if error %}
-        <div style="padding:20px">
-          <div class="error-box">ERROR: {{ error }}</div>
-        </div>
-
+        <div style="padding:20px"><div class="error-box">ERROR: {{ error }}</div></div>
       {% elif result %}
         <div class="verdict-body">
           <div class="verdict-label">Credit Decision</div>
@@ -408,7 +233,6 @@ select option { background: #1a1e26; }
           </div>
           {% endif %}
         </div>
-
       {% else %}
         <div class="idle">
           <div class="idle-icon">◈</div>
@@ -458,9 +282,7 @@ select option { background: #1a1e26; }
       <span class="review-c">REVIEW</span> 35% – 60%<br/>
       <span class="reject-c">REJECT</span> prob &gt; 60%
     </div>
-
   </div>
 </div>
-
 </body>
 </html>

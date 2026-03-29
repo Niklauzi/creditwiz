@@ -1,0 +1,19 @@
+{
+    "sqltools.connections": [
+        {
+            "pgOptions": {
+                "ssl": {
+                    "rejectUnauthorized": true
+                }
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "localhost",
+            "driver": "PostgreSQL",
+            "name": "dpg-d6spv22a214c73c6gifg-a",
+            "database": "creditwiz",
+            "username": "creditwiz_user",
+            "connectString": "postgresql://creditwiz_user:gxZGkGHm7WiPnv5BUq68VGyEXx0IfWkl@dpg-d6spv22a214c73c6gifg-a.oregon-postgres.render.com/creditwiz"
+        }
+    ]
+}
